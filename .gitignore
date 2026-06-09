@@ -1,0 +1,11 @@
+# Frontend
+ai-memory-graph/node_modules
+ai-memory-graph/.next
+
+# Backend
+backend/target
+
+# IDE
+.idea
+.vscode
+.DS_Store
