@@ -17,6 +17,7 @@ import {
   Check
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useWorkspace } from "@/hooks/useWorkspace"
 
 // Data Structure
 interface Message {
@@ -161,10 +162,49 @@ const initialSessions: ChatSession[] = [
 ]
 
 export default function ChatPage() {
+  const { activeWorkspaceId, workspaces } = useWorkspace()
   const [sessions, setSessions] = React.useState<ChatSession[]>(initialSessions)
   const [activeSessionId, setActiveSessionId] = React.useState("neural-arch")
   const [typedMessage, setTypedMessage] = React.useState("")
   const [isTyping, setIsTyping] = React.useState(false)
+
+  React.useEffect(() => {
+    if (activeWorkspaceId) {
+      const ws = workspaces.find((w) => w.id === activeWorkspaceId)
+      if (ws) {
+        setSessions((prevSessions) => {
+          const existingSession = prevSessions.find((s) => s.id === ws.id)
+          if (existingSession) {
+            setActiveSessionId(ws.id)
+            return prevSessions
+          }
+          
+          const newSession: ChatSession = {
+            id: ws.id,
+            title: ws.title,
+            time: "Just now",
+            goal: ws.description,
+            nextStep: "Analyze repository nodes and compile dependency mapping.",
+            completedTasks: [
+              { id: `task-ws-1`, label: "Initialize Workspace Context", done: true },
+              { id: `task-ws-2`, label: "Map Source Directories", done: false },
+            ],
+            messages: [
+              {
+                id: `m-ws-${Date.now()}`,
+                sender: "ai",
+                time: "JUST NOW",
+                text: `Welcome to the **${ws.title}** workspace. I have initialized the context analyzer. How can I help you index your memory graph today?`,
+                highlights: [ws.title]
+              }
+            ]
+          }
+          setActiveSessionId(ws.id)
+          return [newSession, ...prevSessions]
+        })
+      }
+    }
+  }, [activeWorkspaceId, workspaces])
 
   const activeSession = sessions.find((s) => s.id === activeSessionId) || sessions[0]
 

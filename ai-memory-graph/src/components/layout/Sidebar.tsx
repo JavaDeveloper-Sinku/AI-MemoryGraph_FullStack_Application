@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/Button"
+import { useWorkspace } from "@/hooks/useWorkspace"
 import {
   Brain,
   LayoutDashboard,
@@ -24,6 +25,7 @@ interface SidebarProps {
 
 export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname()
+  const { setCreateModalOpen } = useWorkspace()
 
   const navItems = [
     {
@@ -108,7 +110,7 @@ export function Sidebar({ className }: SidebarProps) {
         <Button
           variant="outline"
           className="w-full justify-start gap-2 border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 text-blue-400 text-xs font-semibold py-2 px-3 h-9"
-          onClick={() => alert("Creating a new workspace...")}
+          onClick={() => setCreateModalOpen(true)}
         >
           <Plus className="w-4 h-4" />
           <span>New Workspace</span>

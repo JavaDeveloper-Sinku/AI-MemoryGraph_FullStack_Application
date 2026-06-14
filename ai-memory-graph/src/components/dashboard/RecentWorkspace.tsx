@@ -1,6 +1,6 @@
 import * as React from "react"
 import { Card, CardContent } from "@/components/ui/Card"
-import { LucideIcon } from "lucide-react"
+import { LucideIcon, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface RecentWorkspaceProps {
@@ -12,6 +12,7 @@ interface RecentWorkspaceProps {
   tags: string[]
   editedAt: string
   onClick?: () => void
+  onDelete?: () => void
 }
 
 export function RecentWorkspace({
@@ -22,7 +23,8 @@ export function RecentWorkspace({
   iconBgColor,
   tags,
   editedAt,
-  onClick
+  onClick,
+  onDelete
 }: RecentWorkspaceProps) {
   return (
     <Card
@@ -39,6 +41,19 @@ export function RecentWorkspace({
             <div className={cn("p-2 rounded-lg border border-white/5 shadow-inner", iconBgColor)}>
               <Icon className={cn("w-4.5 h-4.5", iconColor)} />
             </div>
+            {onDelete && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onDelete()
+                }}
+                className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors duration-200"
+                title="Delete Workspace"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           {/* Text Info */}

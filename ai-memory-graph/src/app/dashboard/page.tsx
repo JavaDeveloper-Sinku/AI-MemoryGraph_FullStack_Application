@@ -7,6 +7,9 @@ import { RecentWorkspace } from "@/components/dashboard/RecentWorkspace"
 import { ActivityTimeline } from "@/components/dashboard/ActivityTimeline"
 import { Card, CardContent } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
+import * as LucideIcons from "lucide-react"
+import { useWorkspace } from "@/hooks/useWorkspace"
+import { useRouter } from "next/navigation"
 import {
   Network,
   MessageSquare,
@@ -22,115 +25,6 @@ import {
 } from "lucide-react"
 
 // Mock Data
-const statsData = [
-  {
-    id: "total-workspaces",
-    title: "Total Workspaces",
-    value: "12",
-    subtitle: "+2 this week",
-    icon: Network,
-    iconColor: "text-blue-400",
-    iconBgColor: "bg-blue-500/10",
-    trendType: "positive" as const,
-  },
-  {
-    id: "total-conversations",
-    title: "Total Conversations",
-    value: "142",
-    subtitle: "Synced 5m ago",
-    icon: MessageSquare,
-    iconColor: "text-amber-400",
-    iconBgColor: "bg-amber-500/10",
-    trendType: "neutral" as const,
-  },
-  {
-    id: "memories-generated",
-    title: "Memories Generated",
-    value: "856",
-    subtitle: "12% increase",
-    icon: BrainCircuit,
-    iconColor: "text-emerald-400",
-    iconBgColor: "bg-emerald-500/10",
-    trendType: "positive" as const,
-  },
-  {
-    id: "active-projects",
-    title: "Active Projects",
-    value: "4",
-    subtitle: "No urgent alerts",
-    icon: Rocket,
-    iconColor: "text-purple-400",
-    iconBgColor: "bg-purple-500/10",
-    trendType: "neutral" as const,
-  },
-]
-
-const recentWorkspaces = [
-  {
-    id: "nn-design",
-    title: "Neural Network Design",
-    description: "Architecture blueprints for the upcoming LLM fine-tuning project including quantization strategy.",
-    icon: Cpu,
-    iconColor: "text-indigo-400",
-    iconBgColor: "bg-indigo-500/10",
-    tags: ["#3b82f6", "#10b981"],
-    editedAt: "Edited 2h ago",
-  },
-  {
-    id: "market-sentiment",
-    title: "Market Sentiment Engine",
-    description: "Financial data processing pipeline for real-time sentiment analysis of crypto markets.",
-    icon: TrendingUp,
-    iconColor: "text-emerald-400",
-    iconBgColor: "bg-emerald-500/10",
-    tags: ["#f59e0b"],
-    editedAt: "Edited 5h ago",
-  },
-]
-
-const activities = [
-  {
-    id: "act-1",
-    time: "Just Now",
-    title: "Memory Sync Completed",
-    description: "Synchronized 24 nodes from Workspace Explorer.",
-    dotColor: "bg-blue-500",
-    ringColor: "ring-blue-500/20",
-  },
-  {
-    id: "act-2",
-    time: "45 Minutes Ago",
-    title: "Graph Auto-Reorganization",
-    description: "Cluster 'Deep Learning' updated with 3 new associations.",
-    dotColor: "bg-emerald-500",
-    ringColor: "ring-emerald-500/20",
-  },
-  {
-    id: "act-3",
-    time: "3 Hours Ago",
-    title: "Cloud Backup Finished",
-    description: "Delta update: 4.2MB encrypted data sent to secure node.",
-    dotColor: "bg-slate-600",
-    ringColor: "ring-slate-600/20",
-  },
-  {
-    id: "act-4",
-    time: "Yesterday",
-    title: "Weekly Insights Generated",
-    description: "System identified a conflict in project deadlines.",
-    dotColor: "bg-amber-500",
-    ringColor: "ring-amber-500/20",
-  },
-  {
-    id: "act-5",
-    time: "Yesterday",
-    title: "New Workspace Created",
-    description: "'Personal Journal' added by user.",
-    dotColor: "bg-purple-500",
-    ringColor: "ring-purple-500/20",
-  },
-]
-
 const memoryInsights = [
   {
     id: "insight-1",
@@ -154,9 +48,54 @@ const memoryInsights = [
 
 export default function Dashboard() {
   const [searchQuery, setSearchQuery] = React.useState("")
+  const { workspaces, activities, setActiveWorkspaceId } = useWorkspace()
+  const router = useRouter()
+
+  const statsData = [
+    {
+      id: "total-workspaces",
+      title: "Total Workspaces",
+      value: workspaces.length.toString(),
+      subtitle: "+2 this week",
+      icon: Network,
+      iconColor: "text-blue-400",
+      iconBgColor: "bg-blue-500/10",
+      trendType: "positive" as const,
+    },
+    {
+      id: "total-conversations",
+      title: "Total Conversations",
+      value: "142",
+      subtitle: "Synced 5m ago",
+      icon: MessageSquare,
+      iconColor: "text-amber-400",
+      iconBgColor: "bg-amber-500/10",
+      trendType: "neutral" as const,
+    },
+    {
+      id: "memories-generated",
+      title: "Memories Generated",
+      value: "856",
+      subtitle: "12% increase",
+      icon: BrainCircuit,
+      iconColor: "text-emerald-400",
+      iconBgColor: "bg-emerald-500/10",
+      trendType: "positive" as const,
+    },
+    {
+      id: "active-projects",
+      title: "Active Projects",
+      value: "4",
+      subtitle: "No urgent alerts",
+      icon: Rocket,
+      iconColor: "text-purple-400",
+      iconBgColor: "bg-purple-500/10",
+      trendType: "neutral" as const,
+    },
+  ]
 
   // Filter logic
-  const filteredWorkspaces = recentWorkspaces.filter(
+  const filteredWorkspaces = workspaces.filter(
     (ws) =>
       ws.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       ws.description.toLowerCase().includes(searchQuery.toLowerCase())
@@ -214,7 +153,7 @@ export default function Dashboard() {
               <Button
                 variant="link"
                 className="text-[11px] font-semibold text-blue-400 hover:text-blue-300 p-0 h-auto gap-1"
-                onClick={() => alert("Redirecting to all workspaces...")}
+                onClick={() => router.push("/workspaces")}
               >
                 <span>View All</span>
                 <ArrowRight className="w-3 h-3" />
@@ -230,19 +169,25 @@ export default function Dashboard() {
               )
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {filteredWorkspaces.map((ws) => (
-                  <RecentWorkspace
-                    key={ws.id}
-                    title={ws.title}
-                    description={ws.description}
-                    icon={ws.icon}
-                    iconColor={ws.iconColor}
-                    iconBgColor={ws.iconBgColor}
-                    tags={ws.tags}
-                    editedAt={ws.editedAt}
-                    onClick={() => alert(`Opening workspace: ${ws.title}`)}
-                  />
-                ))}
+                {filteredWorkspaces.map((ws) => {
+                  const IconComponent = (LucideIcons as any)[ws.iconName] || LucideIcons.FolderClosed
+                  return (
+                    <RecentWorkspace
+                      key={ws.id}
+                      title={ws.title}
+                      description={ws.description}
+                      icon={IconComponent}
+                      iconColor={ws.iconColor}
+                      iconBgColor={ws.iconBgColor}
+                      tags={ws.tags}
+                      editedAt={ws.editedAt}
+                      onClick={() => {
+                        setActiveWorkspaceId(ws.id)
+                        router.push("/chat")
+                      }}
+                    />
+                  )
+                })}
               </div>
             )}
           </div>

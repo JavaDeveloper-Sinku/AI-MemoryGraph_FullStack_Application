@@ -4,6 +4,8 @@ import * as React from "react"
 import { Sidebar } from "@/components/layout/Sidebar"
 import { Topbar } from "@/components/layout/Topbar"
 import { cn } from "@/lib/utils"
+import { useWorkspace } from "@/hooks/useWorkspace"
+import { CreateWorkspaceModal } from "@/components/dashboard/CreateWorkspaceModal"
 
 export interface AppLayoutProps {
   children: React.ReactNode
@@ -14,6 +16,7 @@ export interface AppLayoutProps {
 
 export function AppLayout({ children, searchVal, onSearchChange, noPadding }: AppLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
+  const { isCreateModalOpen, setCreateModalOpen, addWorkspace } = useWorkspace()
 
   return (
     <div className="flex h-screen w-full bg-[#0B0F19] text-slate-100 overflow-hidden font-sans">
@@ -55,6 +58,11 @@ export function AppLayout({ children, searchVal, onSearchChange, noPadding }: Ap
           </div>
         </main>
       </div>
+      <CreateWorkspaceModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+        onCreate={addWorkspace}
+      />
     </div>
   )
 }
