@@ -30,7 +30,7 @@ export function ActivityTimeline({ activities = [], className }: ActivityTimelin
       <CardContent className="p-6 flex-1 relative overflow-y-auto">
         {activities.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-slate-500 text-xs">
-            No activity logged.
+            No activity logged.   
           </div>
         ) : (
           <div className="relative pl-6 space-y-6">
